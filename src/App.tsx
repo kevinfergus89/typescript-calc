@@ -2,6 +2,12 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+interface Props {
+  children?: React.ReactNode
+  // any props that come into the component
+}
+
+
 function App() {
   return (
     <div className="App">
