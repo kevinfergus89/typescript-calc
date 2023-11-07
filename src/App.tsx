@@ -36,10 +36,19 @@ const App = () => {
             : Number(calc.num) % 1 === 0
             ? calc.num + Number(value)
             : Number(calc.num)+ Number(value).toString(),
-        res: !calc.sign ? 0 : calc.res,
+        res: !calc.sign ? "0" : calc.res,
       });
     }
 }; 
+
+const invertClickHandler: React.MouseEventHandler<HTMLButtonElement> = () => {
+  setCalc({
+    ...calc,
+    num: calc.num ? (Number(calc.num) * -1).toString() : "0",
+    res: calc.res ? (Number(calc.res) * -1).toString() : "0",
+    sign: "",
+  });
+};
 const signClickHandler: React.MouseEventHandler<HTMLButtonElement>  = (e) => {
   e.preventDefault();
   const value = (e.target as Element).innerHTML;
