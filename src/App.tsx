@@ -19,8 +19,8 @@ const btnValues = [
 const App = () => {
   let [calc, setCalc] = useState({
     sign: "",
-    num: 0,
-    res: 0,
+    num: "0",
+    res: "0",
   });
 
   const numClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -31,15 +31,59 @@ const App = () => {
       setCalc({
         ...calc,
         num:
-          calc.num === 0 && value === "0"
-            ? 0
-            : calc.num % 1 === 0
+          calc.num === "0" && value === "0"
+            ? "0"
+            : Number(calc.num) % 1 === 0
             ? calc.num + Number(value)
-            : calc.num + Number(value),
+            : Number(calc.num)+ Number(value).toString(),
         res: !calc.sign ? 0 : calc.res,
       });
     }
-}
+}; 
+const signClickHandler: React.MouseEventHandler<HTMLButtonElement>  = (e) => {
+  e.preventDefault();
+  const value = (e.target as Element).innerHTML;
+
+  setCalc({
+    ...calc,
+    sign: value,
+    res: !calc.res && calc.num ? calc.num : calc.res,
+    num: "0",
+  });
+};
+
+const equalsClickHandler: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  if (calc.sign && calc.num) {
+    const math = (a: number, b: number, sign: string) =>
+      sign === "+"
+        ? a + b
+        : sign === "-"
+        ? a - b
+        : sign === "X"
+        ? a * b
+        : a / b;
+
+    setCalc({
+      ...calc,
+      res:
+        calc.num === "0" && calc.sign === "/"
+          ? "Can't divide with 0"
+          : math(Number(calc.res), Number(calc.num), calc.sign).toString(),
+      sign: "",
+      num: "0",
+    });
+  }
+};
+const commaClickHandler:  React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  e.preventDefault();
+  const value = (e.target as Element).innerHTML;
+
+  setCalc({
+    ...calc,
+    num: !calc.num.toString().includes(".") ? calc.num + value : calc.num,
+  });
+};
+
   return (
     <Wrapper>
       <Screen value={calc.num ? calc.num.toString() : calc.res.toString()} />
@@ -51,9 +95,21 @@ const App = () => {
                 key={i}
                 className={btn === "=" ? "equals" : ""}
                 value={btn}
-                onClick={() => {
-                  console.log(`${btn} clicked!`);
-                }}
+                onClick={
+                  btn === "C"
+                    ? resetClickHandler
+                    : btn === "+-"
+                    ? invertClickHandler
+                    : btn === "%"
+                    ? percentClickHandler
+                    : btn === "="
+                    ? equalsClickHandler
+                    : btn === "/" || btn === "X" || btn === "-" || btn === "+"
+                    ? signClickHandler
+                    : btn === "."
+                    ? commaClickHandler
+                    : numClickHandler
+                }
               />
             );
           })
